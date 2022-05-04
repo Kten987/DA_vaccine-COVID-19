@@ -1,3 +1,6 @@
+# Website: https://www.lbar.com/agents
+# Lấy dữ liệu gồm: ảnh, tên, địa chỉ, số điện thoại, email của các nhân viên
+
 
 import requests
 from bs4 import BeautifulSoup
@@ -10,10 +13,11 @@ link_domain = "https://www.lbar.com/"
 
 link_list=[]
 for one in range(97,123):
+    # thêm vào link kí tự a -> z bằng hàm chr()
     item = link_base + chr(one) + "&pos=0,1000,1000&xsearch_id=rets_flex_active_agents_alpha&xsearch=dummy"
     link_list.append(item)
 
-f = open("data_lbar.csv", "a")
+f = open("data_lbar.csv", "a") # ghi thông tin vào file 
 
 # phan tich cu phap, boc tach 
 headers = {'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/39.0.2171.95 Safari/537.36'}
@@ -38,8 +42,10 @@ for i in range(0,len(link_list)):
         name1 = name[0].strip()
         name2 = name[1].strip()
         # dug text lay dia chi
-        address = td_list[2].get_text().strip().replace("   ","")
-        address = address.replace("\n","").replace(",","-")
+        address = td_list[2].get_text().strip().replace("   ","") 
+        address = address.replace("\n","").replace(",","-")          # thay dấu , trong địa chỉ để tránh việc tách dữ liệu 
+        
+        # xử lí các trường hợp không có địa chỉ
         try:
 
             email = td_list[3].find_all('a')[0].get_text().strip()
@@ -47,7 +53,8 @@ for i in range(0,len(link_list)):
             email = ''
 
         phone = td_list[3].get_text()
-
+        
+        # xử lí các trường hợp không có điện thoại
         try:
 
             p = re.compile(r"\([0-9]{3}\)\s+[0-9]{3}\-[0-9]{4}")
